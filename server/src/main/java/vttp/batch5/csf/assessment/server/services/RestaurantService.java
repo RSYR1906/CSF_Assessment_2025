@@ -124,6 +124,7 @@ public class RestaurantService {
           .toString();
 
       logger.debug("Payment Request: {}", requestBody);
+      logger.info("RequestBody content:" + requestBody);
 
       // Create the request entity and make the API call
       HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
@@ -131,6 +132,7 @@ public class RestaurantService {
           PAYMENT_API_URL,
           request,
           String.class);
+      logger.info("Response from API:" + response.toString());
 
       // Process the response
       if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {

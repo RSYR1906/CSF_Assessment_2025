@@ -25,11 +25,20 @@ export class ConfirmationComponent implements OnInit {
     if (confirmationData) {
       try {
         const parsedData = JSON.parse(confirmationData);
+        
+        // Format the date
+        const dateObj = new Date(parsedData.date);
+        const formattedDate = dateObj.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+        
         // Ensure total is a number before assigning
         this.orderDetails = {
           orderId: parsedData.orderId,
           paymentId: parsedData.paymentId,
-          date: parsedData.date,
+          date: formattedDate,
           total: Number(parsedData.total) // Convert to number explicitly
         };
       } catch (error) {

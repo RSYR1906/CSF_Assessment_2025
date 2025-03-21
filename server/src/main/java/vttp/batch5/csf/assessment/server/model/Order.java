@@ -23,13 +23,12 @@ public class Order {
     public Order() {
     }
 
-    // Constructor with fields
-    public Order(String order_id, String payment_id, String username, double total, List<OrderItem> items) {
-        this.order_id = order_id;
-        this.payment_id = payment_id;
+    public Order(String orderId, String paymentId, String username, double total, List<OrderItem> items) {
+        // TODO Auto-generated constructor stub
+        this.order_id = orderId;
+        this.payment_id = paymentId;
         this.username = username;
         this.total = total;
-        this.timestamp = LocalDateTime.now();
         this.items = items;
     }
 
