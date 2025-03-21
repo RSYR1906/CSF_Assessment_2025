@@ -54,32 +54,25 @@ public class RestaurantController {
   @PostMapping(path = "/food_order", consumes = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<String> postFoodOrder(@RequestBody String payload) {
     try (JsonReader reader = Json.createReader(new StringReader(payload))) {
-      // Parse the JSON payload
       JsonObject json = reader.readObject();
 
-      // Extract and validate required fields
       String username = json.getString("username");
       String password = json.getString("password");
 
-      // Validate totalPrice
       if (!json.containsKey("totalPrice")) {
         return createErrorResponse(HttpStatus.BAD_REQUEST, "Missing totalPrice in request");
       }
       double totalPrice = json.getJsonNumber("totalPrice").doubleValue();
 
-      // Extract order items
       List<OrderItem> orderItems = extractOrderItems(json);
 
-      // Process the order with authentication
       Map<String, String> result = restaurantService.processOrder(username, password, totalPrice, orderItems);
 
       if ("error".equals(result.get("status"))) {
-        // Authentication or payment failed
         return createErrorResponse(
             HttpStatus.UNAUTHORIZED,
             result.getOrDefault("message", "Order processing failed"));
       } else {
-        // Order successful
         var responseBuilder = Json.createObjectBuilder()
             .add("status", "success")
             .add("orderId", result.get("orderId"))
@@ -95,9 +88,6 @@ public class RestaurantController {
     }
   }
 
-  /**
-   * Extract order items from the request JSON
-   */
   private List<OrderItem> extractOrderItems(JsonObject json) {
     List<OrderItem> orderItems = new ArrayList<>();
 
@@ -119,9 +109,6 @@ public class RestaurantController {
     return orderItems;
   }
 
-  /**
-   * Create an error response with the given status and message
-   */
   private ResponseEntity<String> createErrorResponse(HttpStatus status, String message) {
     var errorBuilder = Json.createObjectBuilder()
         .add("status", "error")

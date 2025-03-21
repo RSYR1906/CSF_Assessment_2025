@@ -14,11 +14,9 @@ public class MenuItem {
     private BigDecimal price;
     private String description;
 
-    // Default constructor required by MongoDB
     public MenuItem() {
     }
 
-    // Constructor with all fields
     public MenuItem(String id, String name, BigDecimal price, String description) {
         this.id = id;
         this.name = name;
@@ -26,7 +24,6 @@ public class MenuItem {
         this.description = description;
     }
 
-    // Getters and Setters
     public String getId() {
         return id;
     }

@@ -18,7 +18,6 @@ export class MenuComponent implements OnInit {
   constructor(private restaurantSvc: RestaurantService, private router: Router) { }
 
   ngOnInit(): void {
-    // Clear any previous selections when returning to the menu
     this.restaurantSvc.clearOrder();
     
     this.restaurantSvc.getMenuItems()
@@ -32,28 +31,20 @@ export class MenuComponent implements OnInit {
   }
 
   addItem(item: MenuItem): void {
-    // Add to the service
     this.restaurantSvc.addItemToOrder(item);
-    
-    // Update totals after adding
     this.updateTotals();
   }
 
   removeItem(item: MenuItem): void {
-    // Remove from the service
     this.restaurantSvc.removeItemFromOrder(item.id);
-    
-    // Update totals after removing
     this.updateTotals();
   }
 
   getQuantity(itemId: string): number {
-    // Get the quantity directly from the service
     return this.restaurantSvc.getItemQuantity(itemId);
   }
 
   updateTotals(): void {
-    // Get totals directly from the service
     this.totalItems = this.restaurantSvc.getTotalItemCount();
     this.totalPrice = this.restaurantSvc.getTotalPrice();
   }
@@ -61,9 +52,6 @@ export class MenuComponent implements OnInit {
   placeOrder(): void {
     if (this.totalItems > 0) {
       console.log('Navigating to place-order with', this.totalItems, 'items');
-      
-      // The RestaurantService already has all the items with their quantities
-      // so we can navigate directly
       this.router.navigate(['/place-order']);
     }
   }

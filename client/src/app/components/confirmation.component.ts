@@ -19,7 +19,6 @@ export class ConfirmationComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    // Retrieve the order confirmation details from session storage
     const confirmationData = sessionStorage.getItem('orderConfirmation');
     
     if (confirmationData) {
@@ -34,26 +33,22 @@ export class ConfirmationComponent implements OnInit {
           year: 'numeric'
         });
         
-        // Ensure total is a number before assigning
         this.orderDetails = {
           orderId: parsedData.orderId,
           paymentId: parsedData.paymentId,
           date: formattedDate,
-          total: Number(parsedData.total) // Convert to number explicitly
+          total: Number(parsedData.total)
         };
       } catch (error) {
         console.error('Error parsing confirmation data:', error);
-        // Handle error case
         this.returnToMenu();
       }
     } else {
-      // No confirmation data found, redirect back to menu
       this.returnToMenu();
     }
   }
 
   returnToMenu(): void {
-    // Clear session storage and return to menu
     sessionStorage.removeItem('orderConfirmation');
     this.router.navigate(['/']);
   }

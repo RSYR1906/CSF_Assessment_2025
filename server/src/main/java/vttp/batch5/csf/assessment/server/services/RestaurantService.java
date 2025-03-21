@@ -55,17 +55,14 @@ public class RestaurantService {
   public Map<String, String> processOrder(String username, String password, double total, List<OrderItem> items) {
     logger.info("Processing order for user: {} with total: {}", username, total);
 
-    // Authenticate user
     if (!restaurantRepository.authenticateUser(username, password)) {
       logger.warn("Authentication failed for user: {}", username);
       return Map.of("status", "error", "message", "Invalid username or password");
     }
 
-    // Generate a unique order ID
     String orderId = generateOrderId();
     logger.info("Generated order ID: {}", orderId);
 
-    // Process payment
     String paymentId = processPayment(orderId, username, total);
     if (paymentId == null) {
       logger.error("Payment processing failed for order ID: {}", orderId);
@@ -73,7 +70,6 @@ public class RestaurantService {
     }
     logger.info("Payment successful with ID: {}", paymentId);
 
-    // Save order to MySQL
     try {
       restaurantRepository.saveOrder(username, orderId, paymentId, total);
       logger.info("Order saved to MySQL successfully");
@@ -82,7 +78,6 @@ public class RestaurantService {
       return Map.of("status", "error", "message", "Failed to save order to MySQL: " + e.getMessage());
     }
 
-    // Save order to MongoDB
     try {
       Order order = new Order(orderId, paymentId, username, total, items);
       ordersRepository.saveOrder(order);
@@ -118,17 +113,15 @@ public class RestaurantService {
           .toString();
 
       logger.debug("Payment Request: {}", requestBody);
-      logger.info("RequestBody content:" + requestBody);
+      // logger.info("RequestBody content:" + requestBody);
 
-      // Create the request entity and make the API call
       HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
       ResponseEntity<String> response = restTemplate.postForEntity(
           PAYMENT_API_URL,
           request,
           String.class);
-      logger.info("Response from API:" + response.toString());
+      // logger.info("Response from API:" + response.toString());
 
-      // Process the response
       if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
         logger.debug("Payment Response: {}", response.getBody());
         return extractPaymentId(response.getBody());
@@ -145,7 +138,6 @@ public class RestaurantService {
     }
   }
 
-  // Extract payment ID from JSON response
   private String extractPaymentId(String responseBody) {
     try (JsonReader reader = Json.createReader(new java.io.StringReader(responseBody))) {
       JsonObject jsonResponse = reader.readObject();
@@ -165,7 +157,6 @@ public class RestaurantService {
     }
   }
 
-  // Generate a random 8-character order ID
   private String generateOrderId() {
     StringBuilder sb = new StringBuilder(8);
     ThreadLocalRandom random = ThreadLocalRandom.current();

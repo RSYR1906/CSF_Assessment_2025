@@ -1,5 +1,4 @@
 // You may use this file to create any models
-// Models for the restaurant application
 export interface MenuItem {
     id: string;
     name: string;

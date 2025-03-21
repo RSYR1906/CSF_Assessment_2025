@@ -3,16 +3,14 @@ package vttp.batch5.csf.assessment.server.model;
 public class OrderItem {
 
     private String menuItemId;
-    private String name; // Added name field
+    private String name;
     private int quantity;
     private double price;
-    private double subtotal; // Added subtotal field
+    private double subtotal;
 
-    // Default constructor for MongoDB
     public OrderItem() {
     }
 
-    // Constructor with fields
     public OrderItem(String menuItemId, int quantity, double price) {
         this.menuItemId = menuItemId;
         this.quantity = quantity;
@@ -20,7 +18,6 @@ public class OrderItem {
         this.subtotal = price * quantity;
     }
 
-    // Constructor with name
     public OrderItem(String menuItemId, String name, int quantity, double price) {
         this.menuItemId = menuItemId;
         this.name = name;
@@ -29,7 +26,6 @@ public class OrderItem {
         this.subtotal = price * quantity;
     }
 
-    // Getters and setters
     public String getMenuItemId() {
         return menuItemId;
     }

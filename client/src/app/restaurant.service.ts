@@ -10,12 +10,10 @@ export class RestaurantService {
 
   constructor(private http: HttpClient) { }
 
-  // Get menu items from backend
   getMenuItems(): Promise<any> {
     return firstValueFrom(this.http.get<any[]>("/api/menu"));
   }
 
-  // Add an item to the order
   addItemToOrder(item: MenuItem): void {
     const existingItem = this.selectedMenuItems.get(item.id);
     
@@ -26,7 +24,6 @@ export class RestaurantService {
     }
   }
 
-  // Remove an item from the order
   removeItemFromOrder(itemId: string): void {
     const existingItem = this.selectedMenuItems.get(itemId);
     
@@ -37,17 +34,14 @@ export class RestaurantService {
     }
   }
 
-  // Get the current quantity of an item
   getItemQuantity(itemId: string): number {
     return this.selectedMenuItems.get(itemId)?.quantity || 0;
   }
 
-  // Get all selected items
   getSelectedItems(): (MenuItem & { quantity: number })[] {
     return Array.from(this.selectedMenuItems.values());
   }
 
-  // Calculate the total number of items
   getTotalItemCount(): number {
     let count = 0;
     this.selectedMenuItems.forEach(item => {
@@ -56,7 +50,6 @@ export class RestaurantService {
     return count;
   }
 
-  // Calculate the total price
   getTotalPrice(): number {
     let total = 0;
     this.selectedMenuItems.forEach(item => {
@@ -65,19 +58,16 @@ export class RestaurantService {
     return total;
   }
 
-  // Clear all selected items
   clearOrder(): void {
     this.selectedMenuItems.clear();
   }
 
-  // Submit the order to the backend
   placeOrder(orderData: {
     username: string;
     password: string;
     items: OrderItem[];
     totalPrice: number;
   }): Promise<any> {
-    // Create a payload with all the order details
     const payload = {
       username: orderData.username,
       password: orderData.password,

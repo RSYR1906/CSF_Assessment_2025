@@ -19,12 +19,10 @@ public class Order {
     private LocalDateTime timestamp;
     private List<OrderItem> items;
 
-    // Default constructor for MongoDB
     public Order() {
     }
 
     public Order(String orderId, String paymentId, String username, double total, List<OrderItem> items) {
-        // TODO Auto-generated constructor stub
         this.order_id = orderId;
         this.payment_id = paymentId;
         this.username = username;
@@ -32,7 +30,6 @@ public class Order {
         this.items = items;
     }
 
-    // Getters and setters
     public String getId() {
         return id;
     }
