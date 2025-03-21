@@ -1,4 +1,4 @@
-package vttp.batch5.csf.assessment.model;
+package vttp.batch5.csf.assessment.server.model;
 
 import java.math.BigDecimal;
 

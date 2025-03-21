@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import vttp.batch5.csf.assessment.model.MenuItem;
+import vttp.batch5.csf.assessment.server.model.MenuItem;
 
 @Repository
 public class OrdersRepository {

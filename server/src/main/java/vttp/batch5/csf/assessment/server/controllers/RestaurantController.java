@@ -20,7 +20,7 @@ import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
-import vttp.batch5.csf.assessment.model.MenuItem;
+import vttp.batch5.csf.assessment.server.model.MenuItem;
 import vttp.batch5.csf.assessment.server.services.RestaurantService;
 
 @RestController
