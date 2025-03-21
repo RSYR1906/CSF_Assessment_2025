@@ -1,0 +1,13 @@
+.menu-item {
+  display: grid;
+  grid-template-columns: 1fr 6fr 1fr;
+  align-items: center;
+  padding: 5px;
+  border: 1px lightgray solid;
+  border-radius: 8px;
+}
+
+.menu-button-end {
+  justify-self: end;
+}
+

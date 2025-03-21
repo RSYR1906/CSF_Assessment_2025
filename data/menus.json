@@ -1,0 +1,56 @@
+[
+    {
+        "_id": "89ab618a",
+        "name": "Tofu Bao",
+        "price": 3.80,
+        "description": "Crispy, fried tofu bites mixed in a spicy, topped Sausage"
+    },
+    {
+        "_id": "08635ecb",
+        "name": "Tacos De alambre",
+        "price": 4.60,
+        "description": "Chicken cooked with bacon, topped with Oaxaca cheese"
+    },
+    {
+        "_id": "cdbc9d4a",
+        "name": "Tacos Al Pastor",
+        "price": 3.00,
+        "description": "Warmth from spices and sweetness from pineapple"
+    },
+    {
+        "_id": "b9f0f5e1",
+        "name": "Chicken Bruschetta",
+        "price": 7.70,
+        "description": "Crunch, succulent juicy chicken and a glaze drizzle"
+    },
+    {
+        "_id": "82bafd4b",
+        "name": "Vegetarian Frito Pie",
+        "price": 5.30,
+        "description": "Kick off the week than with this Vegetarian Frito Pie"
+    },
+    {
+        "_id": "59781890",
+        "name": "Kafta Kebabs",
+        "price": 3.00,
+        "description": "Beautifully flavored with spices and fresh parsley"
+    },
+    {
+        "_id": "9aedc2a8",
+        "name": "Balik Ekmek",
+        "price": 9.20,
+        "description": "BALIK EKMEK / ISTANBUL STREET FLAVOR, FISH SANDWICH"
+    },
+    {
+        "_id": "ef78c865",
+        "name": "Kielbasa Quesadillas",
+        "price": 7.70,
+        "description": "Sausage, peppers, and onions with a twist: Kielbasa Quesadillas"
+    },
+    {
+        "_id": "4936f7a8",
+        "name": "Ground Tacos",
+        "price": 6.10,
+        "description": "Sandwiches have eggs, bacon, cheese, avocado, spinach, and tomato"
+    }
+]
