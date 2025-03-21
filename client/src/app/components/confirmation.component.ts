@@ -24,7 +24,14 @@ export class ConfirmationComponent implements OnInit {
     
     if (confirmationData) {
       try {
-        this.orderDetails = JSON.parse(confirmationData);
+        const parsedData = JSON.parse(confirmationData);
+        // Ensure total is a number before assigning
+        this.orderDetails = {
+          orderId: parsedData.orderId,
+          paymentId: parsedData.paymentId,
+          date: parsedData.date,
+          total: Number(parsedData.total) // Convert to number explicitly
+        };
       } catch (error) {
         console.error('Error parsing confirmation data:', error);
         // Handle error case
