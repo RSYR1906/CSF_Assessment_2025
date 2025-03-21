@@ -1,6 +1,6 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { firstValueFrom } from "rxjs";
+import { catchError, firstValueFrom, throwError } from "rxjs";
 import { MenuItem, OrderItem } from "./models";
 
 @Injectable()
@@ -8,16 +8,13 @@ export class RestaurantService {
 
   private selectedMenuItems: Map<string, MenuItem & { quantity: number }> = new Map();
 
+  constructor(private http: HttpClient) { }
 
-  constructor(private http: HttpClient) {	}
-
-  // TODO: Task 2.2
-  // You change the method's signature but not the name
+  // Get menu items from backend
   getMenuItems(): Promise<any> {
     return firstValueFrom(this.http.get<any[]>("/api/menu"));
   }
 
-  // TODO: Task 3.2
   // Add an item to the order
   addItemToOrder(item: MenuItem): void {
     const existingItem = this.selectedMenuItems.get(item.id);
@@ -78,13 +75,33 @@ export class RestaurantService {
     username: string;
     password: string;
     items: OrderItem[];
+    totalPrice: number;
   }): Promise<any> {
+    // Create a simplified payload that matches exactly what the backend expects
+    const simplifiedPayload = {
+      username: orderData.username,
+      password: orderData.password,
+      totalPrice: orderData.totalPrice
+      // Note: We're intentionally not sending the items array as the backend 
+      // controller currently doesn't process it
+    };
+    
+    console.log('Sending order to backend:', simplifiedPayload);
+    
     return firstValueFrom(
-      this.http.post<any>("/api/food_order", orderData, {
+      this.http.post<any>("/api/food_order", simplifiedPayload, {
         headers: {
           'Content-Type': 'application/json'
         }
-      })
+      }).pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('HTTP Error:', error);
+          if (error.status === 401) {
+            return throwError(() => new Error('Invalid username or password'));
+          }
+          return throwError(() => new Error('Error placing order: ' + (error.error?.message || error.message || 'Unknown error')));
+        })
+      )
     );
   }
 }

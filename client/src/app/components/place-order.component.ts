@@ -56,7 +56,8 @@ export class PlaceOrderComponent implements OnInit {
       // Prepare the order items
       const orderItems: OrderItem[] = this.selectedItems.map(item => ({
         menuItemId: item.id,
-        quantity: item.quantity
+        quantity: item.quantity,
+        price: item.price
       }));
       
       // Create the order data
