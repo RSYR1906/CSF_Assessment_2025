@@ -28,7 +28,6 @@ public class OrdersRepository {
     Query query = new Query();
     query.with(Sort.by(Sort.Direction.ASC, "name"));
 
-    // Execute query against the menus collection
     List<MenuItem> menus = mongoTemplate.find(query, MenuItem.class, "menus");
     return menus;
   }
