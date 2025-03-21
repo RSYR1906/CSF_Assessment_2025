@@ -38,7 +38,7 @@ COPY server/src src
 RUN mkdir -p src/main/resources/static
 
 # Copy Angular build output to Spring Boot static resources directory
-COPY --from=ngbuild /client/dist/client/ src/main/resources/static/
+COPY --from=ngbuild /client/dist/client/browser src/main/resources/static/
 
 # Build Spring Boot app
 RUN chmod a+x mvnw

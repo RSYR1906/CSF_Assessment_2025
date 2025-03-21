@@ -89,7 +89,6 @@ public class RestaurantService {
       logger.info("Order saved to MongoDB successfully with {} items", items.size());
     } catch (Exception e) {
       logger.warn("Error saving order to MongoDB: {}", e.getMessage(), e);
-      // Continue since MySQL save was successful
     }
 
     // Return success response
@@ -101,14 +100,7 @@ public class RestaurantService {
         "total", String.valueOf(total));
   }
 
-  /**
-   * Process payment by calling external payment API
-   * 
-   * @param orderId  The generated order ID
-   * @param username The username from the order
-   * @param total    The total price of the order
-   * @return Payment ID if successful, null otherwise
-   */
+  // Process payment by calling external payment API
   private String processPayment(String orderId, String username, double total) {
     try {
       // Set up headers
@@ -153,9 +145,7 @@ public class RestaurantService {
     }
   }
 
-  /**
-   * Extract payment ID from JSON response
-   */
+  // Extract payment ID from JSON response
   private String extractPaymentId(String responseBody) {
     try (JsonReader reader = Json.createReader(new java.io.StringReader(responseBody))) {
       JsonObject jsonResponse = reader.readObject();
@@ -175,9 +165,7 @@ public class RestaurantService {
     }
   }
 
-  /**
-   * Generate a random 8-character order ID
-   */
+  // Generate a random 8-character order ID
   private String generateOrderId() {
     StringBuilder sb = new StringBuilder(8);
     ThreadLocalRandom random = ThreadLocalRandom.current();
