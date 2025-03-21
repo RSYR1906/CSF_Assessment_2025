@@ -77,19 +77,23 @@ export class RestaurantService {
     items: OrderItem[];
     totalPrice: number;
   }): Promise<any> {
-    // Create a simplified payload that matches exactly what the backend expects
-    const simplifiedPayload = {
+    // Create a payload with all the order details
+    const payload = {
       username: orderData.username,
       password: orderData.password,
-      totalPrice: orderData.totalPrice
-      // Note: We're intentionally not sending the items array as the backend 
-      // controller currently doesn't process it
+      totalPrice: orderData.totalPrice,
+      items: this.getSelectedItems().map(item => ({
+        menuItemId: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price
+      }))
     };
     
-    console.log('Sending order to backend:', simplifiedPayload);
+    console.log('Sending order to backend:', payload);
     
     return firstValueFrom(
-      this.http.post<any>("/api/food_order", simplifiedPayload, {
+      this.http.post<any>("/api/food_order", payload, {
         headers: {
           'Content-Type': 'application/json'
         }

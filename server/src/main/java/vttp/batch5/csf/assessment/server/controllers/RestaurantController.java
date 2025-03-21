@@ -1,6 +1,7 @@
 package vttp.batch5.csf.assessment.server.controllers;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 import vttp.batch5.csf.assessment.server.model.MenuItem;
+import vttp.batch5.csf.assessment.server.model.OrderItem;
 import vttp.batch5.csf.assessment.server.services.RestaurantService;
 
 @RestController
@@ -74,8 +76,27 @@ public class RestaurantController {
         return ResponseEntity.badRequest().body(errorBuilder.build().toString());
       }
 
+      // Extract order items if present
+      List<OrderItem> orderItems = new ArrayList<>();
+      if (json.containsKey("items") && json.get("items").getValueType() == jakarta.json.JsonValue.ValueType.ARRAY) {
+        JsonArray itemsArray = json.getJsonArray("items");
+        for (int i = 0; i < itemsArray.size(); i++) {
+          JsonObject itemJson = itemsArray.getJsonObject(i);
+          String menuItemId = itemJson.getString("menuItemId");
+          int quantity = itemJson.getInt("quantity");
+          double price = 0.0;
+          if (itemJson.containsKey("price")) {
+            price = itemJson.getJsonNumber("price").doubleValue();
+          }
+
+          OrderItem item = new OrderItem(
+              menuItemId, quantity, price);
+          orderItems.add(item);
+        }
+      }
+
       // Process the order with authentication
-      Map<String, String> result = restaurantService.processOrder(username, password, totalPrice);
+      Map<String, String> result = restaurantService.processOrder(username, password, totalPrice, orderItems);
 
       // Create response based on result
       JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
@@ -110,4 +131,5 @@ public class RestaurantController {
           .body(errorBuilder.build().toString());
     }
   }
+
 }

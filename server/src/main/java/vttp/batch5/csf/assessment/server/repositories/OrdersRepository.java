@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
 import vttp.batch5.csf.assessment.server.model.MenuItem;
+import vttp.batch5.csf.assessment.server.model.Order;
 
 @Repository
 public class OrdersRepository {
@@ -36,5 +37,22 @@ public class OrdersRepository {
   // Write the native MongoDB query for your access methods in the comment below
   //
   // Native MongoDB query here
-
+  // db.orders.insertOne({
+  // order_id: "8 char id",
+  // payment_id: "payment id from API",
+  // username: "username",
+  // total: totalAmount,
+  // timestamp: new Date(),
+  // items: [array of ordered items]
+  // })
+  public Order saveOrder(Order order) {
+    try {
+      System.out.println("Saving order to MongoDB: " + order);
+      return mongoTemplate.insert(order, "orders");
+    } catch (Exception e) {
+      System.err.println("Error saving order to MongoDB: " + e.getMessage());
+      e.printStackTrace();
+      throw e;
+    }
+  }
 }

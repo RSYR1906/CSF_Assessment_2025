@@ -18,6 +18,7 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import vttp.batch5.csf.assessment.server.model.MenuItem;
+import vttp.batch5.csf.assessment.server.model.OrderItem;
 import vttp.batch5.csf.assessment.server.repositories.OrdersRepository;
 import vttp.batch5.csf.assessment.server.repositories.RestaurantRepository;
 
@@ -43,7 +44,8 @@ public class RestaurantService {
   }
 
   // Task 4
-  public Map<String, String> processOrder(String username, String password, double total) {
+  public Map<String, String> processOrder(String username, String password, double total,
+      List<OrderItem> items) {
     try {
       System.out.println("Processing order for user: " + username + " with total: " + total);
 
@@ -70,14 +72,30 @@ public class RestaurantService {
 
       System.out.println("Payment successful with ID: " + paymentId);
 
-      // Save the order to database
+      // Save the order to MySQL database
       try {
         restaurantRepository.saveOrder(username, orderId, paymentId, total);
-        System.out.println("Order saved successfully");
+        System.out.println("Order saved to MySQL successfully");
       } catch (Exception e) {
-        System.err.println("Error saving order: " + e.getMessage());
+        System.err.println("Error saving order to MySQL: " + e.getMessage());
         e.printStackTrace();
-        return Map.of("status", "error", "message", "Failed to save order: " + e.getMessage());
+        return Map.of("status", "error", "message", "Failed to save order to MySQL: " + e.getMessage());
+      }
+
+      // Also save the order to MongoDB
+      try {
+        // Create a new Order object with the provided items
+        vttp.batch5.csf.assessment.server.model.Order order = new vttp.batch5.csf.assessment.server.model.Order(orderId,
+            paymentId, username, total, items);
+
+        // Save it to MongoDB
+        ordersRepository.saveOrder(order);
+        System.out.println("Order saved to MongoDB successfully with " + items.size() + " items");
+      } catch (Exception e) {
+        System.err.println("Error saving order to MongoDB: " + e.getMessage());
+        e.printStackTrace();
+        // We don't return an error here since the MySQL save was successful
+        // Just log the error and continue
       }
 
       // Build response with all order details
