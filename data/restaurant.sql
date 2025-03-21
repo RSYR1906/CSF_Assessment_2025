@@ -26,5 +26,5 @@ create table place_orders (
 	payment_id varchar(128) NOT NULL UNIQUE,
 	order_date date NOT NULL,
 	total decimal(8,2) NOT NULL,
-	username varchar(128) NOT NULL	
+	username varchar(64) NOT NULL	
 )

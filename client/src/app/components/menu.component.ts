@@ -12,13 +12,15 @@ import { RestaurantService } from '../restaurant.service';
 export class MenuComponent implements OnInit {
   
   menuItems: MenuItem[] = [];
-  selectedItems: Map<string, number> = new Map<string, number>();
   totalPrice: number = 0;
   totalItems: number = 0;
 
   constructor(private restaurantSvc: RestaurantService, private router: Router) { }
 
   ngOnInit(): void {
+    // Clear any previous selections when returning to the menu
+    this.restaurantSvc.clearOrder();
+    
     this.restaurantSvc.getMenuItems()
       .then(items => {
         console.log('Menu items received:', items);
@@ -30,41 +32,38 @@ export class MenuComponent implements OnInit {
   }
 
   addItem(item: MenuItem): void {
-    const currentQuantity = this.selectedItems.get(item.id) || 0;
-    this.selectedItems.set(item.id, currentQuantity + 1);
+    // Add to the service
+    this.restaurantSvc.addItemToOrder(item);
+    
+    // Update totals after adding
     this.updateTotals();
   }
 
   removeItem(item: MenuItem): void {
-    const currentQuantity = this.selectedItems.get(item.id) || 0;
-    if (currentQuantity > 0) {
-      this.selectedItems.set(item.id, currentQuantity - 1);
-      this.updateTotals();
-    }
+    // Remove from the service
+    this.restaurantSvc.removeItemFromOrder(item.id);
+    
+    // Update totals after removing
+    this.updateTotals();
   }
 
   getQuantity(itemId: string): number {
-    return this.selectedItems.get(itemId) || 0;
+    // Get the quantity directly from the service
+    return this.restaurantSvc.getItemQuantity(itemId);
   }
 
   updateTotals(): void {
-    this.totalItems = 0;
-    this.totalPrice = 0;
-    
-    this.selectedItems.forEach((quantity, itemId) => {
-      if (quantity > 0) {
-        const item = this.menuItems.find(i => i.id === itemId);
-        if (item) {
-          this.totalItems += quantity;
-          this.totalPrice += item.price * quantity;
-        }
-      }
-    });
+    // Get totals directly from the service
+    this.totalItems = this.restaurantSvc.getTotalItemCount();
+    this.totalPrice = this.restaurantSvc.getTotalPrice();
   }
 
   placeOrder(): void {
     if (this.totalItems > 0) {
-      // TODO: Navigate to place order page with selected items
+      console.log('Navigating to place-order with', this.totalItems, 'items');
+      
+      // The RestaurantService already has all the items with their quantities
+      // so we can navigate directly
       this.router.navigate(['/place-order']);
     }
   }
