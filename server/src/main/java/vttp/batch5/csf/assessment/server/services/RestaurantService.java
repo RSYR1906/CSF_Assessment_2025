@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import vttp.batch5.csf.assessment.model.Menu;
+import vttp.batch5.csf.assessment.model.MenuItem;
 import vttp.batch5.csf.assessment.server.repositories.OrdersRepository;
 
 public class RestaurantService {
@@ -14,8 +14,8 @@ public class RestaurantService {
 
   // TODO: Task 2.2
   // You may change the method's signature
-  public List<Menu> getMenus() {
-    List<Menu> menuList = ordersRepository.getMenus();
+  public List<MenuItem> getMenus() {
+    List<MenuItem> menuList = ordersRepository.getMenus();
     return menuList;
   }
 

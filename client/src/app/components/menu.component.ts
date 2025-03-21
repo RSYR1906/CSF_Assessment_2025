@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { RestaurantService } from '../restaurant.service';
 
 @Component({
   selector: 'app-menu',
@@ -8,5 +10,16 @@ import { Component } from '@angular/core';
 })
 export class MenuComponent {
   // TODO: Task 2
-  
+  menu: string[]=[];
+
+  constructor(private restaurantSvc: RestaurantService, private router: Router) { }
+
+  ngOnInit(): void {
+    this.restaurantSvc.getMenuItems().then(result=> {
+      console.log(result)
+      this.menu = result;
+    }).catch(err => {
+      console.error(err)
+    });
+  }
 }

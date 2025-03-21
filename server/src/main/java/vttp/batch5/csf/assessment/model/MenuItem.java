@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import org.springframework.data.annotation.Id;
 
-public class Menu {
+public class MenuItem {
 
     @Id
     private String id;
@@ -13,11 +13,11 @@ public class Menu {
     private String description;
 
     // Default constructor required by MongoDB
-    public Menu() {
+    public MenuItem() {
     }
 
     // Constructor with all fields
-    public Menu(String id, String name, BigDecimal price, String description) {
+    public MenuItem(String id, String name, BigDecimal price, String description) {
         this.id = id;
         this.name = name;
         this.price = price;
