@@ -29,7 +29,6 @@ import vttp.batch5.csf.assessment.server.repositories.RestaurantRepository;
 @Service
 public class RestaurantService {
   private static final Logger logger = LoggerFactory.getLogger(RestaurantService.class);
-  private static final String PAYMENT_API_URL = "https://payment-service-production-a75a.up.railway.app/api/payment";
   private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
   @Autowired
@@ -40,6 +39,9 @@ public class RestaurantService {
 
   @Autowired
   private RestTemplate restTemplate = new RestTemplate();
+
+  @Value("${payment.api.url}")
+  private String PAYMENT_API_URL;
 
   @Value("${application.owner.name}")
   private String payeeName;

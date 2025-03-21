@@ -6,13 +6,13 @@ WORKDIR /client
 # install angular cli
 RUN npm i -g @angular/cli@19.2.1
 
-COPY ecommerce/client/angular.json .
-COPY ecommerce/client/package.json .
-COPY ecommerce/client/tsconfig.json .
-COPY ecommerce/client/tsconfig.app.json .
+COPY csf_assessment_template/client/angular.json .
+COPY csf_assessment_template/client/package.json .
+COPY csf_assessment_template/client/tsconfig.json .
+COPY csf_assessment_template/client/tsconfig.app.json .
 #COPY client/server.ts .
 #COPY client/ngsw-config.json .
-COPY ecommerce/client/src src
+COPY client/src src
 
 RUN npm i
 RUN npm ci
@@ -23,10 +23,10 @@ FROM openjdk:23 AS javabuild
 
 WORKDIR /server
 
-COPY ecommerce/pom.xml .
-COPY ecommerce/.mvn .mvn
-COPY ecommerce/mvnw .
-COPY ecommerce/src src
+COPY csf_assessment_template/pom.xml .
+COPY csf_assessment_template/.mvn .mvn
+COPY csf_assessment_template/mvnw .
+COPY csf_assessment_template/src src
 
 COPY --from=ngbuild /client/dist/client-side/browser src/main/resources/static
 
