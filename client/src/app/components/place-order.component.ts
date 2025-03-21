@@ -70,14 +70,26 @@ export class PlaceOrderComponent implements OnInit {
       // Submit the order
       this.restaurantSvc.placeOrder(orderData)
         .then(response => {
-          console.log('Order placed successfully', response);
-          // Navigate to confirmation page
-          this.router.navigate(['/confirmation']);
+          if (response.status === 'success') {
+            console.log('Order placed successfully', response);
+            // Store order details for confirmation page
+            sessionStorage.setItem('orderConfirmation', JSON.stringify({
+              orderId: response.orderId,
+              paymentId: response.paymentId,
+              date: response.date,
+              total: response.total
+            }));
+            // Navigate to confirmation page
+            this.router.navigate(['/confirmation']);
+          } else {
+            // Handle error from server
+            throw new Error(response.message || 'Unknown error occurred');
+          }
         })
         .catch(error => {
           console.error('Error placing order', error);
-          // Handle error (could show an error message)
-          alert('Failed to place order. Please try again.');
+          // Show error message to user
+          alert(error.message || 'Failed to place order. Please check your credentials and try again.');
         });
     }
   }

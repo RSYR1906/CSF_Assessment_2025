@@ -78,10 +78,9 @@ export class RestaurantService {
     username: string;
     password: string;
     items: OrderItem[];
-    totalPrice: number;
   }): Promise<any> {
     return firstValueFrom(
-      this.http.post<any>("/api/order", orderData, {
+      this.http.post<any>("/api/food_order", orderData, {
         headers: {
           'Content-Type': 'application/json'
         }
