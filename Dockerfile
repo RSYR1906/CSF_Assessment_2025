@@ -1,48 +1,61 @@
-# build angular app
-FROM node:22 AS ngbuild
+# Stage 1 - Build Angular app
+FROM node:20-alpine AS ngbuild
 
 WORKDIR /client
 
-# install angular cli
-RUN npm i -g @angular/cli@19.2.1
+# Install Angular CLI
+RUN npm i -g @angular/cli@19.1.8
 
-COPY csf_assessment_template/client/angular.json .
-COPY csf_assessment_template/client/package.json .
-COPY csf_assessment_template/client/tsconfig.json .
-COPY csf_assessment_template/client/tsconfig.app.json .
-#COPY client/server.ts .
-#COPY client/ngsw-config.json .
+# Copy Angular configuration files
+COPY client/angular.json .
+COPY client/package.json .
+COPY client/tsconfig.json .
+COPY client/tsconfig.app.json .
+
+# Copy source code
 COPY client/src src
 
+# Install dependencies and build
 RUN npm i
 RUN npm ci
 RUN ng build
 
-# Stage 2 - build spring boot
-FROM openjdk:23 AS javabuild
+# Stage 2 - Build Spring Boot app
+FROM eclipse-temurin:23-jdk-alpine AS javabuild
 
 WORKDIR /server
 
-COPY csf_assessment_template/pom.xml .
-COPY csf_assessment_template/.mvn .mvn
-COPY csf_assessment_template/mvnw .
-COPY csf_assessment_template/src src
+# Copy Maven files
+COPY server/pom.xml .
+COPY server/.mvn .mvn
+COPY server/mvnw .
+COPY server/mvnw.cmd .
 
-COPY --from=ngbuild /client/dist/client-side/browser src/main/resources/static
+# Copy source code
+COPY server/src src
 
+# Create static directory if it doesn't exist
+RUN mkdir -p src/main/resources/static
+
+# Copy Angular build output to Spring Boot static resources directory
+COPY --from=ngbuild /client/dist/client/ src/main/resources/static/
+
+# Build Spring Boot app
 RUN chmod a+x mvnw
 RUN ./mvnw package -Dmaven.test.skip=true
 
-## RUN container
-FROM openjdk:23
+# Stage 3 - Final runtime image
+FROM eclipse-temurin:23-jre-alpine
 
 WORKDIR /app
 
+# Copy the built JAR file
 COPY --from=javabuild /server/target/*.jar app.jar
 
+# Environment variables for Railway
 ENV PORT=8080
 
+# Expose the port (but Railway will map this to its own port)
 EXPOSE ${PORT}
 
-# start container
 ENTRYPOINT [ "java", "-jar", "app.jar"]
