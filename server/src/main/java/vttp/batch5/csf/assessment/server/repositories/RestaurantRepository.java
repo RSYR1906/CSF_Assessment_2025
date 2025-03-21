@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 // Use the following class for MySQL database
 public class RestaurantRepository {
-
+    
 }

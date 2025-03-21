@@ -4,26 +4,42 @@
   </div>
 </div>
 
-<form>
+<form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
   <div class="row mb-2">
     <div class="col">
       <label for="username" class="form-label">Username</label>
-      <input type="text" id="username" class="form-control" placeholder="Registered username">
+      <input type="text" id="username" class="form-control" 
+             placeholder="Registered username" 
+             formControlName="username">
+      <div *ngIf="orderForm.get('username')?.invalid && orderForm.get('username')?.touched" 
+           class="text-danger mt-1">
+        <small *ngIf="orderForm.get('username')?.errors?.['required']">Username is required</small>
+        <small *ngIf="orderForm.get('username')?.errors?.['minlength']">Username must be at least 3 characters</small>
+      </div>
     </div>
   </div>
   <div class="row mb-2">
     <div class="col">
       <label for="password" class="form-label">Password</label>
-      <input type="password" id="password" class="form-control" placeholder="Valid password">
+      <input type="password" id="password" class="form-control" 
+             placeholder="Valid password" 
+             formControlName="password">
+      <div *ngIf="orderForm.get('password')?.invalid && orderForm.get('password')?.touched" 
+           class="text-danger mt-1">
+        <small *ngIf="orderForm.get('password')?.errors?.['required']">Password is required</small>
+        <small *ngIf="orderForm.get('password')?.errors?.['minlength']">Password must be at least 3 characters</small>
+      </div>
     </div>
   </div>
   <div class="row mb-5">
     <div class="col">
       <div class="d-flex justify-content-between">
-        <button type="button" class="btn btn-danger">
+        <button type="button" class="btn btn-danger" (click)="startOver()">
           Start Over
         </button>
-        <button type="submit" class="btn btn-primary">Confirm</button>
+        <button type="submit" class="btn btn-primary" [disabled]="orderForm.invalid || selectedItems.length === 0">
+          Confirm
+        </button>
       </div>
     </div>
   </div>
@@ -39,29 +55,31 @@
     <table class="table table-striped">
       <thead>
         <tr>
-          <th></th>
-          <th> Name </th>
-          <th> Price </th>
-          <th> Quantity </th>
-          <th></th>
+          <th>#</th>
+          <th>Name</th>
+          <th>Price</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td> 1 </td>
-          <td> XXX </td>
-          <td> $10 </td>
-          <td> XXX </td>
-          <td> $10 </td>
+        <tr *ngFor="let item of selectedItems; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.name }}</td>
+          <td>${{ item.price.toFixed(2) }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>${{ (item.price * (item.quantity || 0)).toFixed(2) }}</td>
+        </tr>
+        <tr *ngIf="selectedItems.length === 0">
+          <td colspan="5" class="text-center">No items selected</td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="4"></td>
-          <td> $10 </td>
+          <td colspan="4" class="text-end fw-bold">Total:</td>
+          <td class="fw-bold">${{ totalAmount.toFixed(2) }}</td>
         </tr>
       </tfoot>
-
     </table>
   </div>
 </div>

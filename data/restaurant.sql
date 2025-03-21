@@ -21,3 +21,10 @@ insert into customers(username, password) values
 
 -- TODO: Task 1.2
 -- Write your task 1.2 below
+create table place_orders (
+	order_id char(8) NOT NULL PRIMARY KEY,
+	payment_id varchar(128) NOT NULL UNIQUE,
+	order_date date NOT NULL,
+	total decimal(8,2) NOT NULL,
+	username varchar(128) NOT NULL	
+)

@@ -1,35 +1,33 @@
 <div class="row mt-3">
   <div class="col d-flex justify-content-between align-items-center">
-    <div class="fs-1 fw-bold text-primary">Menu ($XXX)</div>
+    <div class="fs-1 fw-bold text-primary">Menu (${{ totalPrice.toFixed(2) }})</div>
     <div>
-      <button type="button" class="btn btn-primary">
-        Place Order (XXX)
+      <button type="button" class="btn btn-primary" [disabled]="totalItems === 0" (click)="placeOrder()">
+        Place Order ({{ totalItems }})
       </button>
     </div>
   </div>
 </div>
 
-<!-- each row display a single mene item -->
-<div class="row mb-2">
+<!-- Display each menu item -->
+<div class="row mb-2" *ngFor="let item of menuItems">
   <div class="col">
     <div class="menu-item">
       <div>
-        <button type="button" class="btn btn-warning">
+        <button type="button" class="btn btn-warning" (click)="removeItem(item)" [disabled]="getQuantity(item.id) === 0">
           <i class="bi bi-x-square"></i>
         </button>
       </div>
       <div class="menu-details">
-        <div>Name: <span class="fw-bold"> XXX </span> </div>
+        <div>Name: <span class="fw-bold">{{ item.name }}</span> </div>
         <div>Description:
-          <span class="fst-italic">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-          </span>
+          <span class="fst-italic">{{ item.description }}</span>
         </div>
-        <div></div>
-          <div class="text-danger fw-bold">Quantity: XXX</div>
+        <div>Price: <span class="fw-bold">${{ item.price.toFixed(2) }}</span></div>
+        <div *ngIf="getQuantity(item.id) > 0" class="text-danger fw-bold">Quantity: {{ getQuantity(item.id) }}</div>
       </div>
       <div class="menu-button-end">
-        <button type="button" class="btn btn-success">
+        <button type="button" class="btn btn-success" (click)="addItem(item)">
           <i class="bi bi-plus-circle"></i>
         </button>
       </div>
@@ -37,29 +35,11 @@
   </div>
 </div>
 
-<div class="row mb-2">
+<!-- Show message if no menu items -->
+<div class="row mb-2" *ngIf="menuItems.length === 0">
   <div class="col">
-    <div class="menu-item">
-      <div>
-        <button type="button" class="btn btn-warning">
-          <i class="bi bi-x-square"></i>
-        </button>
-      </div>
-      <div class="menu-details">
-        <div>Name: <span class="fw-bold"> XXX </span> </div>
-        <div>Description:
-          <span class="fst-italic">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-          </span>
-        </div>
-        <div></div>
-          <div class="text-danger fw-bold">Quantity: XXX</div>
-      </div>
-      <div class="menu-button-end">
-        <button type="button" class="btn btn-success">
-          <i class="bi bi-plus-circle"></i>
-        </button>
-      </div>
+    <div class="alert alert-info">
+      Loading menu items...
     </div>
   </div>
 </div>
