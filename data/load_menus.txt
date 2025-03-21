@@ -1,2 +1,2 @@
 # TODO: Task 1.1
-mongoimport --host localhost --port 27017 --type json --jsonArray --db restaurants --collection menus --file menus.json
+mongoimport --host localhost --port 27017 --type json --jsonArray --db restaurant --collection menus --file menus.json

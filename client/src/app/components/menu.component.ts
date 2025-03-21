@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { RestaurantService } from '../restaurant.service';
 
@@ -8,7 +8,7 @@ import { RestaurantService } from '../restaurant.service';
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
-export class MenuComponent {
+export class MenuComponent implements OnInit {
   // TODO: Task 2
   menu: string[]=[];
 
@@ -22,4 +22,5 @@ export class MenuComponent {
       console.error(err)
     });
   }
+
 }

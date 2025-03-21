@@ -13,6 +13,7 @@ import { ConfirmationComponent } from './components/confirmation.component';
 
 const appRoutes: Routes = [
   {path:'', component: MenuComponent },
+  {path:'**', redirectTo: '', pathMatch: 'full' }
 ]
 
 @NgModule({
