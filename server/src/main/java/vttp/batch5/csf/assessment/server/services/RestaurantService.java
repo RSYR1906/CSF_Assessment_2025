@@ -30,9 +30,10 @@ public class RestaurantService {
   @Autowired
   private RestaurantRepository restaurantRepository;
 
-  private static final String PAYMENT_API_URL = "https://payment-service-production-a75a.up.railway.app/";
+  // Update the payment API URL with the correct endpoint if needed
+  private static final String PAYMENT_API_URL = "https://payment-service-production-a75a.up.railway.app/api/payments";
 
-  @Value("${application.owner.name:Your Official Name}")
+  @Value("${application.owner.name}")
   private String payeeName;
 
   // Task 2.2
@@ -96,15 +97,16 @@ public class RestaurantService {
       // Set up headers
       HttpHeaders headers = new HttpHeaders();
       headers.setContentType(MediaType.APPLICATION_JSON);
-      // Add the required X-Authenticate header with the same value as payer
+      // Add the required X-Authenticate header with the username
       headers.set("X-Authenticate", username);
 
-      // Create the request body
+      // Create the request body according to the payment gateway's expected format
+      // Using the exact field names expected by the payment gateway
       String requestBody = Json.createObjectBuilder()
-          .add("order-id", orderId)
-          .add("payer", username)
-          .add("payee", payeeName)
-          .add("payment", totalAmount)
+          .add("orderId", orderId)
+          .add("name", username)
+          .add("payeeName", payeeName)
+          .add("amount", totalAmount)
           .build()
           .toString();
 
@@ -127,15 +129,20 @@ public class RestaurantService {
         JsonReader reader = Json.createReader(new java.io.StringReader(response.getBody()));
         JsonObject jsonResponse = reader.readObject();
 
-        // Assuming the response contains a payment_id field
-        if (jsonResponse.containsKey("payment_id")) {
+        // Check for paymentId in various possible formats
+        if (jsonResponse.containsKey("paymentId")) {
+          return jsonResponse.getString("paymentId");
+        } else if (jsonResponse.containsKey("payment_id")) {
           return jsonResponse.getString("payment_id");
+        } else if (jsonResponse.containsKey("id")) {
+          return jsonResponse.getString("id");
         } else {
-          System.err.println("Payment successful but no payment_id in response");
-          return "PAYMENT-" + java.util.UUID.randomUUID().toString().substring(0, 8);
+          System.err.println("Payment successful but no payment ID in response: " + jsonResponse);
+          // Return a fallback payment ID if not found in response
+          return "PAY-" + java.util.UUID.randomUUID().toString().substring(0, 8);
         }
       } else {
-        System.err.println("Payment failed: " + response.getStatusCode());
+        System.err.println("Payment failed: " + response.getStatusCode() + " - " + response.getBody());
         return null;
       }
     } catch (Exception e) {

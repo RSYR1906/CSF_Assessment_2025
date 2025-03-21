@@ -58,12 +58,9 @@ public class RestaurantController {
       JsonReader reader = Json.createReader(new StringReader(payload));
       JsonObject json = reader.readObject();
 
-      // Extract required fields with detailed logging
+      // Extract required fields
       String username = json.getString("username");
       String password = json.getString("password");
-
-      // Log the received credentials (REMOVE IN PRODUCTION!)
-      System.out.println("Auth attempt - Username: " + username + ", Password length: " + password.length());
 
       // Ensure totalPrice is present and valid
       double totalPrice;
@@ -77,42 +74,18 @@ public class RestaurantController {
         return ResponseEntity.badRequest().body(errorBuilder.build().toString());
       }
 
-      // Log request details
-      System.out.println("Received order request - Username: " + username + ", Total: " + totalPrice);
-
-      // For debugging: Try with hardcoded check first (REMOVE IN PRODUCTION!)
-      boolean debugAuth = false;
-      if (username.equals("fred") && password.equals("fred")) {
-        debugAuth = true;
-        System.out.println("Debug auth success for fred/fred");
-      }
-
       // Process the order with authentication
-      Map<String, String> result;
-
-      if (debugAuth) {
-        // For debugging - bypass the service call (REMOVE IN PRODUCTION!)
-        result = Map.of(
-            "status", "success",
-            "orderId", "TEST123",
-            "paymentId", "PAY456",
-            "date", java.time.LocalDate.now().toString(),
-            "total", String.valueOf(totalPrice));
-      } else {
-        // Normal path - use the service
-        result = restaurantService.processOrder(username, password, totalPrice);
-      }
+      Map<String, String> result = restaurantService.processOrder(username, password, totalPrice);
 
       // Create response based on result
       JsonObjectBuilder responseBuilder = Json.createObjectBuilder();
 
       if ("error".equals(result.get("status"))) {
-        // Authentication failed
+        // Authentication or payment failed
         responseBuilder
             .add("status", "error")
-            .add("message", result.getOrDefault("message", "Authentication failed"));
+            .add("message", result.getOrDefault("message", "Order processing failed"));
 
-        System.out.println("Authentication failed for user: " + username);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
             .body(responseBuilder.build().toString());
       } else {
@@ -124,7 +97,6 @@ public class RestaurantController {
             .add("date", result.get("date"))
             .add("total", result.get("total"));
 
-        System.out.println("Order successful for user: " + username);
         return ResponseEntity.ok(responseBuilder.build().toString());
       }
     } catch (Exception e) {

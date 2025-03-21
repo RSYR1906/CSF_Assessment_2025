@@ -13,7 +13,7 @@ public class RestaurantRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // Authenticate user against customers table
+    // Authenticate user against customers table with debug logging
     public boolean authenticateUser(String username, String password) {
         try {
             String sql = "SELECT COUNT(*) FROM customers WHERE username = ? AND password = SHA2(?, 224)";
@@ -22,6 +22,12 @@ public class RestaurantRepository {
             System.out.println("Auth SQL: " + sql);
             System.out.println(
                     "Auth params: username=" + username + ", password=" + (password != null ? "[provided]" : "[null]"));
+
+            // Alternative simpler query for testing
+            // String testSql = "SELECT COUNT(*) FROM customers WHERE username = ?";
+            // Integer userExists = jdbcTemplate.queryForObject(testSql, Integer.class,
+            // username);
+            // System.out.println("User exists check: " + (userExists > 0));
 
             Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username, password);
             System.out.println("Auth result count: " + count);
@@ -34,23 +40,7 @@ public class RestaurantRepository {
         }
     }
 
-    // Save order to the place_orders table with provided order ID and payment ID
-    public void saveOrder(String username, String orderId, String paymentId, double total) {
-        try {
-            LocalDate orderDate = LocalDate.now();
-
-            String sql = "INSERT INTO place_orders (order_id, payment_id, order_date, total, username) VALUES (?, ?, ?, ?, ?)";
-            jdbcTemplate.update(sql, orderId, paymentId, orderDate, total, username);
-
-            System.out.println("Order saved successfully: ID=" + orderId + ", Payment=" + paymentId);
-        } catch (Exception e) {
-            System.err.println("Error saving order for user " + username + ": " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Database error: " + e.getMessage());
-        }
-    }
-
-    // Legacy method - keeps backward compatibility
+    // Save order to the place_orders table
     public String saveOrder(String username, double total) {
         try {
             // Generate unique IDs
